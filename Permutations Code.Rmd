@@ -9,7 +9,7 @@ output: pdf_document
 # First we load the data:
 library(readxl)
 library(dplyr)
-df <- read_excel("C:\\Users\\cbrig\\OneDrive\\Mom\\Old Mom's Projects\\Permutations Experiment\\Research Numbers V2.xlsx")
+df <- read_excel("C:\\Users\\cbrig\\OneDrive\\Permutations Experiment\\Research Numbers V2.xlsx")
 colnames(df)[1] <- "Group"
 
 #df
