@@ -73,14 +73,5 @@ t.vector
  df2 <- as.data.frame(df2)
  df2
 ```
-```{r}
- #v1 <- as.vector(df2[2,2:17])
- #v2 <- as.vector(df2[1,2:17])
- #v3 <- v1-v2
- #v3$Group = 'Diff'
- #p.vector1$Group = 'P-value'
- #t.vector$Group = 'T-stat'
- #final <- rbind(df2,v3,p.vector1,t.vector)
-# write.csv(final, "C:\\Users\\cbrig\\OneDrive - University of Pittsburgh\\Mom\\Permutations Experiment\\mydata.csv")
-```
+
 
