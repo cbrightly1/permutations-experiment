@@ -1,0 +1,86 @@
+---
+title: "Permutation Test"
+author: "Clare Cruz"
+date: "4/13/2021"
+output: pdf_document
+---
+
+```{r include=FALSE}
+# First we load the data:
+library(readxl)
+library(dplyr)
+df <- read_excel("C:\\Users\\cbrig\\OneDrive\\Mom\\Old Mom's Projects\\Permutations Experiment\\Research Numbers V2.xlsx")
+colnames(df)[1] <- "Group"
+
+#df
+```
+
+```{r}
+# Now we create two groups according to the group labels in the dataset and calculate a t-statistic
+# on the original group labels
+# set.seed(114)
+p.vector1 <- NULL
+p.vector2 <- NULL
+t.vector <- NULL
+
+for(j in 2:17)
+{
+  Group1 <- df[df$Group =='Student',j]
+  Group2 <- df[df$Group =='Supervisor',j]
+  t0 <- abs(t.test(Group1,Group2)$statistic)
+  t.vector <- c(t.vector,t0)
+  
+# Now we'll do 1000 permutations of the group labels and calculate a new t-statistic each time:
+  nperm <- 1000
+  t.perm <- rep(0,nperm)
+  
+  for (i in 1:nperm) {
+    set.seed(141)
+  	ind <- sample(df$Group)
+  	df$Group <- ind
+  	Group1 <- df[df$Group =='Student',j]	
+  	Group2 <- df[df$Group =='Supervisor',j]	
+  	t.perm[i] <- abs(t.test(Group1,Group2)$statistic)
+  }
+  
+  # Now let's make a histogram of our permuted t-statistics and see where
+  # our original t-statistic falls:
+  hist(t.perm, main = paste("Histogram of ", colnames(df[j])), xlab = "T-statistic")
+  abline(v=quantile(t.perm, 0.05),col='red',lwd=2)
+  abline(v=quantile(t.perm, 0.95),col='red',lwd=2)
+  abline(v=t0,col='blue',lwd=2)
+  
+  # You should see that it looks like it could have plausibly come from this distribution, so we
+  # probably not reject the null hypothesis.  Let's be sure by calculating an explicit p-value.  
+  # Here, the p-value is just the percentage of permutation statistics that fell above (were more
+  # extreme than) our original t-statistic.
+  p.vector1 <- c(p.vector1, mean(t.perm >= t0))
+}
+p.vector1
+t.vector
+# You should see that the p-value is larger than 0.05, so we cannot reject the null hypothesis that
+# the group means are equal
+
+```
+
+
+
+
+```{r}
+# Calculating the averages for each group, for each survey question
+ df2 <- df %>% group_by(Group) %>%
+    summarize((across(everything(), list(mean), na.rm = TRUE)))
+ df2 <- as.data.frame(df2)
+ df2
+```
+```{r}
+ #v1 <- as.vector(df2[2,2:17])
+ #v2 <- as.vector(df2[1,2:17])
+ #v3 <- v1-v2
+ #v3$Group = 'Diff'
+ #p.vector1$Group = 'P-value'
+ #t.vector$Group = 'T-stat'
+ #final <- rbind(df2,v3,p.vector1,t.vector)
+# write.csv(final, "C:\\Users\\cbrig\\OneDrive - University of Pittsburgh\\Mom\\Permutations Experiment\\mydata.csv")
+```
+
